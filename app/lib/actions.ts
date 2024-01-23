@@ -14,6 +14,7 @@ const FormSchema = z.object({ //폼데이터의 원형을 만든다.
 });
 
 const CreateInvoice = FormSchema.omit({id: true, date: true});
+const UpdateInvoice = FormSchema.omit({id: true, date: true});
 
 export async function createInvoice(formData: FormData) {
 
@@ -44,4 +45,25 @@ export async function createInvoice(formData: FormData) {
 
     revalidatePath('/dashboard/invoices'); //주소창의 경로를 먼저 바꿔준다.
     redirect('/dashboard/invoices'); //주소창의 경로로 redirect시킨다.
+}
+
+export async function updateInvoice(id: string, formData: FormData) {
+    const { customerId, amount, status } = UpdateInvoice.parse({
+        customerId: formData.get('customerId'),
+        amount: formData.get('amount'),
+        status: formData.get('status'),
+    });
+
+    const amountInCents = amount * 100;
+
+    await sql`
+        UPDATE INVOICES
+           SET CUSTOMER_ID = ${customerId}
+             , AMOUNT = ${amountInCents}
+             , STATUS = ${status}
+         WHERE ID = ${id}
+    `;
+
+    revalidatePath('/dashboard/invoices');
+    redirect('/dashboard/invoices');
 }
