@@ -2,6 +2,9 @@ import { fetchCustomers, fetchInvoiceById } from '@/app/lib/data';
 import Breadcrumbs from "@/app/ui/invoices/breadcrumbs";
 import Form from '@/app/ui/invoices/edit-form';
 
+/*
+    디렉토리 경로에 [id] 이런식으로 대괄호로 감싼 폴더가 있게 되면 동적으로 url을 구성할 수 있게 된다.
+*/
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
