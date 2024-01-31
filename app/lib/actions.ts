@@ -38,10 +38,17 @@ export async function createInvoice(formData: FormData) {
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0];
 
-    await sql`
+    try{
+        await sql`
         INSERT INTO INVOICES (CUSTOMER_ID, AMOUNT, STATUS, DATE)
         VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-    `;
+        `;
+    }catch (error) {
+        return {
+            message: 'Database Error: Failed to Create Invoice.',
+        }
+    }
+    
 
     revalidatePath('/dashboard/invoices'); //주소창의 경로를 먼저 바꿔준다.
     redirect('/dashboard/invoices'); //주소창의 경로로 redirect시킨다.
@@ -56,19 +63,33 @@ export async function updateInvoice(id: string, formData: FormData) {
 
     const amountInCents = amount * 100;
 
-    await sql`
-        UPDATE INVOICES
-           SET CUSTOMER_ID = ${customerId}
-             , AMOUNT = ${amountInCents}
-             , STATUS = ${status}
-         WHERE ID = ${id}
-    `;
+    try{
+        await sql`
+            UPDATE INVOICES
+               SET CUSTOMER_ID = ${customerId}
+                 , AMOUNT = ${amountInCents}
+                 , STATUS = ${status}
+             WHERE ID = ${id}
+        `;
+    }catch (error) {
+        return {
+            message: 'Database Error: Failed to Update Invoice',
+        }
+    }
 
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
 }
 
 export async function deleteInvoice(id: string) {
-    await sql`DELETE FROM INVOICES WHERE ID = ${id}`;
-    revalidatePath('/dasyboard/invoices');
+    //throw new Error('Failed To Delete Invoice Because I made it now.');
+    try{
+        await sql`DELETE FROM INVOICES WHERE ID = ${id}`;
+        revalidatePath('/dasyboard/invoices');
+        return { message: 'Delete Invoice.' }
+    }catch (error) {
+        return {
+            message: 'Database Error: Failed to Delete Invoice'
+        }
+    }
 }
