@@ -24,7 +24,7 @@ export default function Error({
           () => reset()
         }
       >
-        다시 ㅅTry again
+        다시 시도해 보세요. Try again
       </button>
     </main>
   );
