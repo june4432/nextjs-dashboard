@@ -24,7 +24,7 @@ export default function Error({
           () => reset()
         }
       >
-        Try again
+        다시 ㅅTry again
       </button>
     </main>
   );
